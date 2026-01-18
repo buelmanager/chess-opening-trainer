@@ -1,11 +1,12 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import Chessboard from './Chessboard';
 import { useChessGame } from '../hooks/useChessGame';
-import openings from '../data/openings';
+import openings, { whiteOpenings, blackOpenings } from '../data/openings';
 import './OpeningTrainer.css';
 
 export default function OpeningTrainer() {
-  const [selectedOpening, setSelectedOpening] = useState(openings[0]);
+  const [playerColor, setPlayerColor] = useState('white'); // 'white' or 'black'
+  const [selectedOpening, setSelectedOpening] = useState(whiteOpenings[0]);
   const [currentMoveIndex, setCurrentMoveIndex] = useState(0);
   const [mode, setMode] = useState('learn'); // 'learn' or 'practice'
   const [feedback, setFeedback] = useState(null);
@@ -20,10 +21,35 @@ export default function OpeningTrainer() {
     setPositionFromMoves,
   } = useChessGame();
 
+  // 현재 색상에 맞는 오프닝 목록
+  const availableOpenings = useMemo(() => {
+    return playerColor === 'white' ? whiteOpenings : blackOpenings;
+  }, [playerColor]);
+
   const currentMove = selectedOpening.moves[currentMoveIndex];
   const isComplete = currentMoveIndex >= selectedOpening.moves.length;
-  const isUserTurn = currentMoveIndex % 2 === 0; // 백(사용자)의 차례
 
+  // 사용자 차례인지 확인 (백 오프닝: 짝수 인덱스, 흑 오프닝: 홀수 인덱스)
+  const isUserTurn = useMemo(() => {
+    if (playerColor === 'white') {
+      return currentMoveIndex % 2 === 0;
+    } else {
+      return currentMoveIndex % 2 === 1;
+    }
+  }, [playerColor, currentMoveIndex]);
+
+  // 색상 변경 시 해당 색상의 첫 번째 오프닝 선택
+  useEffect(() => {
+    const newOpenings = playerColor === 'white' ? whiteOpenings : blackOpenings;
+    setSelectedOpening(newOpenings[0]);
+    resetGame();
+    setCurrentMoveIndex(0);
+    setFeedback(null);
+    setShowHint(false);
+    setStats({ correct: 0, wrong: 0 });
+  }, [playerColor, resetGame]);
+
+  // 오프닝 변경 시 리셋
   useEffect(() => {
     resetGame();
     setCurrentMoveIndex(0);
@@ -31,8 +57,21 @@ export default function OpeningTrainer() {
     setShowHint(false);
   }, [selectedOpening, resetGame]);
 
+  // 흑 오프닝 선택 시 백의 첫 수 자동 실행
+  useEffect(() => {
+    if (playerColor === 'black' && currentMoveIndex === 0 && selectedOpening.moves.length > 0) {
+      const timer = setTimeout(() => {
+        const firstMove = selectedOpening.moves[0];
+        makeMove(firstMove.from, firstMove.to);
+        setCurrentMoveIndex(1);
+        setFeedback({ type: 'info', message: `백: ${firstMove.notation} - ${firstMove.comment}` });
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [playerColor, selectedOpening, currentMoveIndex, makeMove]);
+
   const handleMove = useCallback((from, to) => {
-    if (isComplete) return;
+    if (isComplete || !currentMove) return;
 
     if (mode === 'learn') {
       // 학습 모드: 올바른 수만 허용
@@ -61,17 +100,23 @@ export default function OpeningTrainer() {
     }
   }, [currentMove, isComplete, isUserTurn, makeMove, mode]);
 
-  // 연습 모드에서 상대방(흑)의 자동 응수
+  // 연습 모드에서 상대방의 자동 응수
   useEffect(() => {
-    if (mode === 'practice' && !isUserTurn && !isComplete) {
+    if (mode === 'practice' && !isUserTurn && !isComplete && currentMove) {
       const timer = setTimeout(() => {
         makeMove(currentMove.from, currentMove.to);
         setCurrentMoveIndex((prev) => prev + 1);
-        setFeedback({ type: 'info', message: `상대방: ${currentMove.notation}` });
+        const colorText = playerColor === 'white' ? '흑' : '백';
+        setFeedback({ type: 'info', message: `${colorText}: ${currentMove.notation}` });
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [mode, isUserTurn, isComplete, currentMove, makeMove]);
+  }, [mode, isUserTurn, isComplete, currentMove, makeMove, playerColor]);
+
+  const handleColorChange = (color) => {
+    setPlayerColor(color);
+    setMode('learn');
+  };
 
   const handleOpeningChange = (e) => {
     const opening = openings.find((o) => o.id === e.target.value);
@@ -86,6 +131,16 @@ export default function OpeningTrainer() {
     setFeedback(null);
     setShowHint(false);
     setStats({ correct: 0, wrong: 0 });
+
+    // 흑 오프닝의 경우 백의 첫 수 자동 실행
+    if (playerColor === 'black' && selectedOpening.moves.length > 0) {
+      setTimeout(() => {
+        const firstMove = selectedOpening.moves[0];
+        makeMove(firstMove.from, firstMove.to);
+        setCurrentMoveIndex(1);
+        setFeedback({ type: 'info', message: `백: ${firstMove.notation}` });
+      }, 300);
+    }
   };
 
   const handleReset = () => {
@@ -93,6 +148,16 @@ export default function OpeningTrainer() {
     setCurrentMoveIndex(0);
     setFeedback(null);
     setShowHint(false);
+
+    // 흑 오프닝의 경우 백의 첫 수 자동 실행
+    if (playerColor === 'black' && selectedOpening.moves.length > 0) {
+      setTimeout(() => {
+        const firstMove = selectedOpening.moves[0];
+        makeMove(firstMove.from, firstMove.to);
+        setCurrentMoveIndex(1);
+        setFeedback({ type: 'info', message: `백: ${firstMove.notation}` });
+      }, 300);
+    }
   };
 
   const showMoveUpTo = (index) => {
@@ -106,15 +171,40 @@ export default function OpeningTrainer() {
     ? [currentMove.from, currentMove.to]
     : [];
 
+  const getTurnText = () => {
+    if (isComplete) return '';
+    const currentTurnColor = currentMoveIndex % 2 === 0 ? '백' : '흑';
+    return currentTurnColor;
+  };
+
   return (
     <div className="opening-trainer">
       <div className="trainer-sidebar">
         <h1>♟ 체스 오프닝 트레이너</h1>
 
+        {/* 색상 선택 */}
+        <div className="color-selector">
+          <label>플레이할 색상:</label>
+          <div className="color-buttons">
+            <button
+              className={`color-btn white ${playerColor === 'white' ? 'active' : ''}`}
+              onClick={() => handleColorChange('white')}
+            >
+              ♔ 백
+            </button>
+            <button
+              className={`color-btn black ${playerColor === 'black' ? 'active' : ''}`}
+              onClick={() => handleColorChange('black')}
+            >
+              ♚ 흑
+            </button>
+          </div>
+        </div>
+
         <div className="control-section">
           <label>오프닝 선택:</label>
           <select value={selectedOpening.id} onChange={handleOpeningChange}>
-            {openings.map((opening) => (
+            {availableOpenings.map((opening) => (
               <option key={opening.id} value={opening.id}>
                 {opening.name}
               </option>
@@ -125,6 +215,9 @@ export default function OpeningTrainer() {
         <div className="opening-info">
           <h3>{selectedOpening.name}</h3>
           <p>{selectedOpening.description}</p>
+          <span className={`color-badge ${selectedOpening.color}`}>
+            {selectedOpening.color === 'white' ? '백 오프닝' : '흑 오프닝'}
+          </span>
         </div>
 
         <div className="mode-buttons">
@@ -149,7 +242,7 @@ export default function OpeningTrainer() {
               key={index}
               className={`move-item ${index < currentMoveIndex ? 'played' : ''} ${
                 index === currentMoveIndex ? 'current' : ''
-              }`}
+              } ${index % 2 === (playerColor === 'white' ? 1 : 0) ? 'opponent-move' : 'your-move'}`}
               onClick={() => mode === 'learn' && showMoveUpTo(index)}
               disabled={mode === 'practice'}
             >
@@ -182,6 +275,7 @@ export default function OpeningTrainer() {
           onMove={handleMove}
           highlightedSquares={highlightedSquares}
           lastMove={lastMove}
+          orientation={playerColor}
         />
 
         {feedback && (
@@ -198,14 +292,15 @@ export default function OpeningTrainer() {
 
         {!isComplete && mode === 'learn' && (
           <div className="instruction">
-            {currentMoveIndex % 2 === 0 ? '백' : '흑'}의 차례입니다.
+            {getTurnText()}의 차례입니다.
             {currentMove && ` 다음 수: ${currentMove.notation}`}
+            {!isUserTurn && ' (상대방 수)'}
           </div>
         )}
 
         {!isComplete && mode === 'practice' && isUserTurn && (
           <div className="instruction">
-            당신의 차례입니다. 올바른 수를 두세요!
+            당신({playerColor === 'white' ? '백' : '흑'})의 차례입니다. 올바른 수를 두세요!
           </div>
         )}
       </div>
