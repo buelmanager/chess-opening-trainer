@@ -1,0 +1,277 @@
+.opening-trainer {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.trainer-sidebar {
+  width: 320px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.trainer-sidebar h1 {
+  font-size: 1.5rem;
+  margin: 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.control-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control-section label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.control-section select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.control-section select:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.control-section select option {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+.opening-info {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.opening-info h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  color: #4fc3f7;
+}
+
+.opening-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+}
+
+.mode-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.mode-buttons button {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mode-buttons button:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mode-buttons button.active {
+  border-color: #4fc3f7;
+  background: rgba(79, 195, 247, 0.2);
+}
+
+.move-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.move-list h4 {
+  margin: 0 0 12px 0;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.move-item {
+  display: inline-block;
+  padding: 6px 10px;
+  margin: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.move-item:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.move-item.played {
+  background: rgba(79, 195, 247, 0.2);
+  border-color: #4fc3f7;
+  color: #fff;
+}
+
+.move-item.current {
+  background: rgba(255, 193, 7, 0.3);
+  border-color: #ffc107;
+  color: #fff;
+}
+
+.move-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.stats {
+  display: flex;
+  gap: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.stats .correct {
+  color: #4caf50;
+}
+
+.stats .wrong {
+  color: #f44336;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-buttons button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-buttons button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.trainer-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.feedback {
+  margin-top: 20px;
+  padding: 16px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-align: center;
+  max-width: 480px;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.feedback.success {
+  background: rgba(76, 175, 80, 0.2);
+  border: 1px solid #4caf50;
+  color: #81c784;
+}
+
+.feedback.error {
+  background: rgba(244, 67, 54, 0.2);
+  border: 1px solid #f44336;
+  color: #e57373;
+}
+
+.feedback.info {
+  background: rgba(79, 195, 247, 0.2);
+  border: 1px solid #4fc3f7;
+  color: #81d4fa;
+}
+
+.completion-message {
+  margin-top: 20px;
+  padding: 20px 32px;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(139, 195, 74, 0.3));
+  border: 2px solid #4caf50;
+  border-radius: 12px;
+  font-size: 1.3rem;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+.instruction {
+  margin-top: 16px;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 900px) {
+  .opening-trainer {
+    flex-direction: column;
+  }
+
+  .trainer-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .trainer-main {
+    padding: 16px;
+  }
+}
