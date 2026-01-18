@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "buel-marketing-hosting"
+  },
+  "targets": {
+    "buel-marketing-hosting": {
+      "hosting": {
+        "chess-opening-trainer": [
+          "chess-opening-trainer"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

@@ -21,7 +21,8 @@ export default function Chessboard({
   onMove,
   highlightedSquares = [],
   lastMove = null,
-  orientation = 'white'
+  orientation = 'white',
+  disabled = false
 }) {
   const [selectedSquare, setSelectedSquare] = useState(null);
   const [draggedPiece, setDraggedPiece] = useState(null);
@@ -32,6 +33,7 @@ export default function Chessboard({
   const isWhitePiece = (piece) => piece === piece.toUpperCase();
 
   const handleSquareClick = useCallback((square) => {
+    if (disabled) return;
     const piece = position[square];
 
     if (selectedSquare) {
@@ -42,16 +44,17 @@ export default function Chessboard({
     } else if (piece) {
       setSelectedSquare(square);
     }
-  }, [selectedSquare, position, onMove]);
+  }, [selectedSquare, position, onMove, disabled]);
 
   const handleDragStart = useCallback((e, square) => {
+    if (disabled) return;
     const piece = position[square];
     if (!piece) return;
 
     setDraggedPiece({ square, piece });
     setSelectedSquare(square);
     e.dataTransfer.effectAllowed = 'move';
-  }, [position]);
+  }, [position, disabled]);
 
   const handleDragOver = useCallback((e) => {
     e.preventDefault();

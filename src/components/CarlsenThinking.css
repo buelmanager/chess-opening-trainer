@@ -1,0 +1,215 @@
+.carlsen-thinking {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+.thinking-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.thinking-icon {
+  font-size: 24px;
+}
+
+.thinking-header h3 {
+  margin: 0;
+  flex: 1;
+  font-size: 1.1rem;
+  color: #ffd700;
+}
+
+.thinking-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-top-color: #ffd700;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.thinking-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.thinking-content.intro {
+  color: rgba(255, 255, 255, 0.9);
+  font-style: italic;
+}
+
+.thinking-content.intro p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.carlsen-tips {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 12px;
+  font-style: normal;
+}
+
+.carlsen-tips h4 {
+  margin: 0 0 12px 0;
+  color: #ffd700;
+}
+
+.carlsen-tips ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.carlsen-tips li {
+  margin: 8px 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 생각 항목들 */
+.thought-move,
+.thought-analysis,
+.thought-reaction,
+.thought-eval,
+.thought-confidence {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.label {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.thought-move .move-notation {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffd700;
+  font-family: 'Courier New', monospace;
+}
+
+.thought-analysis p,
+.thought-reaction p {
+  margin: 0;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.thought-reaction p {
+  font-style: italic;
+  color: #4fc3f7;
+}
+
+.evaluation {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.evaluation.equal {
+  background: rgba(158, 158, 158, 0.3);
+  color: #bdbdbd;
+}
+
+.evaluation.slight-advantage-white,
+.evaluation.white-is-slightly-better {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.evaluation.slight-advantage-black,
+.evaluation.black-is-slightly-better {
+  background: rgba(0, 0, 0, 0.4);
+  color: #bdbdbd;
+}
+
+.evaluation.winning,
+.evaluation.decisive-advantage {
+  background: rgba(76, 175, 80, 0.3);
+  color: #81c784;
+}
+
+.evaluation.error {
+  background: rgba(244, 67, 54, 0.3);
+  color: #e57373;
+}
+
+/* 확신도 바 */
+.thought-confidence {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.thought-confidence .label {
+  margin-bottom: 0;
+}
+
+.confidence-bar {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  min-width: 100px;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffd700, #ffaa00);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.confidence-value {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #ffd700;
+}
+
+.waiting {
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+}
+
+/* 칼슨 명언 */
+.carlsen-quote {
+  margin-top: auto;
+  padding: 16px;
+  background: rgba(255, 215, 0, 0.05);
+  border-left: 3px solid rgba(255, 215, 0, 0.5);
+  border-radius: 0 8px 8px 0;
+}
+
+.carlsen-quote p {
+  margin: 0;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+.carlsen-quote span {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: rgba(255, 215, 0, 0.7);
+}
